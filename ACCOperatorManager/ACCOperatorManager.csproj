@@ -4,4 +4,9 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\AccOperatorManager.Core\AccOperatorManager.Core.csproj" />
+    <ProjectReference Include="..\AccOperatorManager.Data\AccOperatorManager.Data.csproj" />
+  </ItemGroup>
+
 </Project>

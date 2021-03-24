@@ -2,17 +2,21 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AccOperatorManager.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace ACCOperatorManager
+namespace AccOperatorManager
 {
     public class Startup
     {
+        const string connStrB404 = @"Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=10.213.7.1)(PORT=1521)))(CONNECT_DATA=(SID = xe)));User Id=acc ;Password=acc";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -23,6 +27,13 @@ namespace ACCOperatorManager
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //services.AddDbContextPool<AccOperatorManagerDbContext>(options =>
+            //{
+            //    options.UseOracle(connStrB404);
+            //});
+
+            services.AddDbContext<AccOperatorManagerDbContext>(options => options.UseOracle(connStrB404));
+            services.AddScoped<IAccOperatorData, OracleAccOperatorData>();
             services.AddRazorPages();
         }
 
