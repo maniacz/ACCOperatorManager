@@ -6,4 +6,7 @@
 
 <h1>Rework Operators</h1>
 
-
+@foreach(var accOperator in Model.Operators)
+{
+    <partial name="_Summary" model="accOperator" />
+}

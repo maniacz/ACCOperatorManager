@@ -1,4 +1,5 @@
 ﻿using AccOperatorManager.Core;
+using AccOperatorManager.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,15 +9,16 @@ namespace AccOperatorManager.Data
 {
     public class OracleAccOperatorData : IAccOperatorData
     {
-        private readonly AccOperatorManagerDbContext db;
+        private readonly AccDbContext db;
 
-        public OracleAccOperatorData(AccOperatorManagerDbContext db)
+        public OracleAccOperatorData(AccDbContext db)
         {
             this.db = db;
         }
-        public IEnumerable<AccOperator> GetOperatorsByLine(Line line)
+
+        IEnumerable<AccOperator> IAccOperatorData.GetOperatorsByLine(Line line)
         {
-            return db.Operators.Where(o => o.Line == line);
+            return db.AccOperators.Where(o => o.Line == "Gen3_EPS2" && o.Operatorid == "Diagnostyka");
         }
     }
 }
