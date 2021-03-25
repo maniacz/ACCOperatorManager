@@ -1,5 +1,5 @@
 ﻿using System;
-using AccOperatorManager.Core.Models;
+using AccOperatorManager.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 

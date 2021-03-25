@@ -32,7 +32,9 @@ namespace AccOperatorManager
             //    options.UseOracle(connStrB404);
             //});
 
-            services.AddDbContext<AccDbContext>(options => options.UseOracle(connStrB404));
+            services.AddDbContext<AccDbContext>(options => 
+                options.UseOracle(connStrB404, options => 
+                    options.UseOracleSQLCompatibility("11")));
             services.AddScoped<IAccOperatorData, OracleAccOperatorData>();
             services.AddRazorPages();
         }

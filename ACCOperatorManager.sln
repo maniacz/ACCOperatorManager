@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30611.23
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccOperatorManager", "ACCOperatorManager\AccOperatorManager.csproj", "{AE046978-ED0A-4F81-AE92-61344B96F064}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AccOperatorManager", "ACCOperatorManager\AccOperatorManager.csproj", "{AE046978-ED0A-4F81-AE92-61344B96F064}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccOperatorManager.Core", "ACCOperatorManager.Core\AccOperatorManager.Core.csproj", "{B65A3FC9-87E8-4E0A-A721-893532BC6116}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AccOperatorManager.Core", "ACCOperatorManager.Core\AccOperatorManager.Core.csproj", "{B65A3FC9-87E8-4E0A-A721-893532BC6116}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccOperatorManager.Data", "AccOperatorManager.Data\AccOperatorManager.Data.csproj", "{FC5DFB6F-886E-4B22-9BE2-A8E893C30B7A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AccOperatorManager.Data", "AccOperatorManager.Data\AccOperatorManager.Data.csproj", "{FC5DFB6F-886E-4B22-9BE2-A8E893C30B7A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

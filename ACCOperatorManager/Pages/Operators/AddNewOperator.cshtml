@@ -1,0 +1,22 @@
+﻿@page
+@model AccOperatorManager.Pages.Operators.AddNewOperatorModel
+@{
+    ViewData["Title"] = "Add new operator";
+}
+
+<select asp-for="NewAccOperator.Line" asp-items="Model.Lines" class="form-control"></select>
+
+<form method="post">
+    <div class="form-group">
+        <label asp-for="NewAccOperator.Operatorid"></label>
+        <input asp-for="NewAccOperator.Operatorid" class="form-control" />
+        <span class="text-danger" asp-validation-for="NewAccOperator.Operatorid"></span>
+    </div>
+    <div class="form-group">
+        <label>Hasło</label>
+        <input asp-for="NewAccOperator.Name" class="form-control" />
+        <span class="text-danger" asp-validation-for="NewAccOperator.Name"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>

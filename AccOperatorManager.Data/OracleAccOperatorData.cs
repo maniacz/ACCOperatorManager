@@ -1,5 +1,4 @@
 ﻿using AccOperatorManager.Core;
-using AccOperatorManager.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,9 +15,19 @@ namespace AccOperatorManager.Data
             this.db = db;
         }
 
-        IEnumerable<AccOperator> IAccOperatorData.GetOperatorsByLine(Line line)
+        public AccOperator GetOperatorByOperatorId(string operatorId)
         {
-            return db.AccOperators.Where(o => o.Line == "Gen3_EPS2" && o.Operatorid == "Diagnostyka");
+            return db.AccOperators.Where(o => o.Operatorid == operatorId).FirstOrDefault();
+        }
+
+        public AccOperator GetOperatorByOperatorName(string password)
+        {
+            return db.AccOperators.FirstOrDefault(o => o.Name == password && o.Name != null);
+        }
+
+        public IEnumerable<AccOperator> GetOperatorsByLine(Line line)
+        {
+            return db.AccOperators.Where(o => o.Line == "Gen3_EPS2" && o.GroupList != null);
         }
     }
 }
