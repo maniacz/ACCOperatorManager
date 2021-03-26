@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using FluentValidation.AspNetCore;
 
 namespace AccOperatorManager
 {
@@ -37,6 +38,7 @@ namespace AccOperatorManager
                     options.UseOracleSQLCompatibility("11")));
             services.AddScoped<IAccOperatorData, OracleAccOperatorData>();
             services.AddRazorPages();
+            services.AddMvc().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<AccOperatorValidator>());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

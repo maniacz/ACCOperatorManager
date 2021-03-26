@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AccOperatorManager.Core;
 using AccOperatorManager.Data;
 using FluentValidation.Results;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -39,6 +40,8 @@ namespace AccOperatorManager.Pages.Operators
             ValidationResult validationResult = validator.Validate(NewAccOperator);
             if (!validationResult.IsValid)
             {
+                validationResult.AddToModelState(ModelState, null);
+
                 foreach (var failure in validationResult.Errors)
                 {
                     //ModelState.AddModelError(failure.PropertyName, failure.ErrorMessage);
