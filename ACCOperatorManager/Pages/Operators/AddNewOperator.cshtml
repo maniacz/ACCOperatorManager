@@ -4,9 +4,13 @@
     ViewData["Title"] = "Add new operator";
 }
 
-<select asp-for="NewAccOperator.Line" asp-items="Model.Lines" class="form-control"></select>
+@*<select asp-for="NewAccOperator.Line" asp-items="Model.Lines" class="form-control"></select>*@
 
 <form method="post">
+    @foreach (var line in Model.LineNames)
+    {
+        <input type="checkbox" name="LinesChecked" value="@line" /> @line
+    }
     <div class="form-group">
         <label asp-for="NewAccOperator.Operatorid"></label>
         <input asp-for="NewAccOperator.Operatorid" class="form-control" />

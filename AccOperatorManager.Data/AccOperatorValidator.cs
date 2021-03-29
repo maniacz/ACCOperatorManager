@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace AccOperatorManager.Data
+namespace AccOperatorManager.Core
 {
     public class AccOperatorValidator : AbstractValidator<AccOperator>
     {

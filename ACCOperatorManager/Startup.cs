@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AccOperatorManager.Data;
+using AccOperatorManager.Core;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -17,6 +17,7 @@ namespace AccOperatorManager
     public class Startup
     {
         const string connStrB404 = @"Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=10.213.7.1)(PORT=1521)))(CONNECT_DATA=(SID = xe)));User Id=acc ;Password=acc";
+        const string connStrB403 = @"Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=10.213.11.1)(PORT=1521)))(CONNECT_DATA=(SID = xe)));User Id=acc ;Password=acc";
 
         public Startup(IConfiguration configuration)
         {
@@ -34,11 +35,12 @@ namespace AccOperatorManager
             //});
 
             services.AddDbContext<AccDbContext>(options => 
-                options.UseOracle(connStrB404, options => 
+                options.UseOracle(connStrB403, options => 
                     options.UseOracleSQLCompatibility("11")));
             services.AddScoped<IAccOperatorData, OracleAccOperatorData>();
             services.AddRazorPages();
             services.AddMvc().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<AccOperatorValidator>());
+            services.Configure<List<Line>>(Configuration.GetSection("AccLines"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

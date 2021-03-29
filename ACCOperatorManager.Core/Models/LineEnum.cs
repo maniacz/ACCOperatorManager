@@ -1,6 +1,6 @@
 ﻿namespace AccOperatorManager.Core
 {
-    public enum Line
+    public enum LineEnum
     {
         EPS_Fiat_6103,
         EPS_Fiat_B404,

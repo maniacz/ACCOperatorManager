@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 #nullable disable
 
-namespace AccOperatorManager.Data
+namespace AccOperatorManager.Core
 {
     public partial class AccDbContext : DbContext
     {
@@ -19,6 +19,7 @@ namespace AccOperatorManager.Data
         }
 
         public DbSet<AccOperator> AccOperators { get; set; }
+        public DbSet<AccOperatorGroup> AccOperatorGroups { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -59,6 +60,30 @@ namespace AccOperatorManager.Data
                     .HasMaxLength(1)
                     .IsUnicode(false)
                     .HasColumnName("STATUS");
+            });
+
+            modelBuilder.Entity<AccOperatorGroup>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToTable("ACC_OPERATOR_GROUP");
+
+                entity.Property(e => e.GroupDesc)
+                    .HasMaxLength(100)
+                    .IsUnicode(false)
+                    .HasColumnName("GROUP_DESC");
+
+                entity.Property(e => e.GroupName)
+                    .IsRequired()
+                    .HasMaxLength(30)
+                    .IsUnicode(false)
+                    .HasColumnName("GROUP_NAME");
+
+                entity.Property(e => e.Line)
+                    .IsRequired()
+                    .HasMaxLength(20)
+                    .IsUnicode(false)
+                    .HasColumnName("LINE");
             });
 
             modelBuilder.HasSequence("ACCDATADETAILSEQID").IsCyclic();
