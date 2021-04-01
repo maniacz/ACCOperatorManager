@@ -1,4 +1,6 @@
 ﻿using AccOperatorManager.Core;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,15 +10,50 @@ namespace AccOperatorManager.Core
 {
     public class OracleAccOperatorData : IAccOperatorData
     {
-        private readonly AccDbContext db;
+        private AccDbContext db;
+        private readonly IDbContextFactory<AccDbContext> dbContextFactory;
+        private readonly IConfiguration config;
 
-        public OracleAccOperatorData(AccDbContext db)
+        public OracleAccOperatorData(IDbContextFactory<AccDbContext> dbContextFactory, IConfiguration config)
         {
-            this.db = db;
+            this.dbContextFactory = dbContextFactory;
+            this.config = config;
         }
 
-        public string GetAllLineOps()
+        //public OracleAccOperatorData(AccDbContext db)
+        //{
+        //    this.db = db;
+        //}
+
+        public IEnumerable<AccOperator> GetOperatorsByLine(Line line)
         {
+            db = SetDbContext(line);
+            return db.AccOperators;
+        }
+
+        private AccDbContext SetDbContext(Line line)
+        {
+            string connStr = @"Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=server_ip)(PORT=1521)))(CONNECT_DATA=(SID = server_sid)));User Id=server_user ;Password=acc";
+
+            List<Line> lines = config.GetSection("AccLines").Get<List<Line>>();
+            string accServerIp = lines.Where(l => l.LineName == line.LineName).Select(l => l.AccServerIp).FirstOrDefault();
+            string accLocalDbSid = "xe";
+            string accLocalDBUser = "acc";
+
+            connStr = connStr.Replace("server_ip", accServerIp);
+            connStr = connStr.Replace("server_sid", accLocalDbSid);
+            connStr = connStr.Replace("server_user", accLocalDBUser);
+
+            var dbContext = dbContextFactory.CreateDbContext();
+            //string b415ConnStr = @"Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=10.213.28.1)(PORT=1521)))(CONNECT_DATA=(SID = xe)));User Id=acc ;Password=acc";
+            dbContext.Database.CloseConnection();
+            dbContext.Database.SetConnectionString(connStr);
+            return dbContext;
+        }
+
+        public string GetAllLineOps(Line line)
+        {
+            //db = SetDbContext(line);
             return db.AccOperators.OrderByDescending(o => o.Op.Length).Where(o => o.Op != null).Select(o => o.Op).FirstOrDefault();
         }
 
@@ -35,8 +72,9 @@ namespace AccOperatorManager.Core
             return db.AccOperators.Where(o => o.Line == "Gen3_EPS2" && o.GroupList != null);
         }
 
-        public IEnumerable<string> GetAllOperatroGroups()
+        public IEnumerable<string> GetAllOperatroGroups(Line line)
         {
+            //db = SetDbContext(line);
             return db.AccOperatorGroups.Select(g => g.GroupName);
         }
 
@@ -45,8 +83,9 @@ namespace AccOperatorManager.Core
             return groups.Where(g => !g.StartsWith("SYS"));
         }
 
-        public AccOperator AddOperator(AccOperator newOperator)
+        public AccOperator AddOperator(Line line, AccOperator newOperator)
         {
+            db = SetDbContext(line);
 
             List<string> allowedSysGroupsForNormalOperator = new List<string>
             {
@@ -65,11 +104,11 @@ namespace AccOperatorManager.Core
                 "asystent"
             };
 
-            var normalOperatorGroupList = GetAllOperatroGroups().Where(g => !g.StartsWith("SYS") && !forbiddenGroupsForNormalOperator.Contains(g.ToLower())).ToList();
+            var normalOperatorGroupList = GetAllOperatroGroups(line).Where(g => !g.StartsWith("SYS") && !forbiddenGroupsForNormalOperator.Contains(g.ToLower())).ToList();
             normalOperatorGroupList.AddRange(allowedSysGroupsForNormalOperator);
 
             newOperator.GroupList = string.Join(';', normalOperatorGroupList);
-            newOperator.Op = GetAllLineOps();
+            newOperator.Op = GetAllLineOps(line);
 
             db.AccOperators.Add(newOperator);
             return newOperator;

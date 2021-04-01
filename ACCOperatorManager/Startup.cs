@@ -16,8 +16,11 @@ namespace AccOperatorManager
 {
     public class Startup
     {
+        const string connStrPattern = @"Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=server_ip)(PORT=1521)))(CONNECT_DATA=(SID = server_sid)));User Id=server_user ;Password=acc";
+
         const string connStrB404 = @"Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=10.213.7.1)(PORT=1521)))(CONNECT_DATA=(SID = xe)));User Id=acc ;Password=acc";
         const string connStrB403 = @"Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=10.213.11.1)(PORT=1521)))(CONNECT_DATA=(SID = xe)));User Id=acc ;Password=acc";
+
 
         public Startup(IConfiguration configuration)
         {
@@ -34,9 +37,14 @@ namespace AccOperatorManager
             //    options.UseOracle(connStrB404);
             //});
 
-            services.AddDbContext<AccDbContext>(options => 
-                options.UseOracle(connStrB403, options => 
+            //services.AddDbContext<AccDbContext>(options => 
+            //    options.UseOracle(connStrB403, options => 
+            //        options.UseOracleSQLCompatibility("11")));
+
+            services.AddDbContextFactory<AccDbContext>(options =>
+                options.UseOracle(connStrPattern, options =>
                     options.UseOracleSQLCompatibility("11")));
+
             services.AddScoped<IAccOperatorData, OracleAccOperatorData>();
             services.AddRazorPages();
             services.AddMvc().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<AccOperatorValidator>());

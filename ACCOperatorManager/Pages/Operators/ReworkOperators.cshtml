@@ -10,13 +10,14 @@
 
 <h2>@Model.MaxOp</h2>
 
-@foreach (var group in Model.OperatorGroups)
-{
-    <label>@group</label>
-}
+@*
+    @foreach (var group in Model.OperatorGroups)
+    {
+        <label>@group</label>
+    }*@
 
 
-@foreach(var accOperator in Model.Operators)
+@foreach (var accOperator in Model.Operators)
 {
     <partial name="_Summary" model="accOperator" />
 }

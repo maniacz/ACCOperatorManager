@@ -7,12 +7,12 @@ namespace AccOperatorManager.Core
 {
     public interface IAccOperatorData
     {
-        IEnumerable<AccOperator> GetOperatorsByLine(LineEnum line);
+        IEnumerable<AccOperator> GetOperatorsByLine(Line line);
         AccOperator GetOperatorByOperatorId(string operatorId);
         AccOperator GetOperatorByOperatorName(string password);
-        string GetAllLineOps();
-        IEnumerable<string> GetAllOperatroGroups();
-        AccOperator AddOperator(AccOperator newOperator);
+        string GetAllLineOps(Line line);
+        IEnumerable<string> GetAllOperatroGroups(Line line);
+        AccOperator AddOperator(Line line, AccOperator newOperator);
         int Commit();
     }
 }

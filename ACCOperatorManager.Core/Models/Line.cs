@@ -9,7 +9,8 @@ namespace AccOperatorManager.Core
         public string LineName { get; set; }
         public string DisplayName { get; set; }
         public string AccServerIp { get; set; }
-        public string c { get; set; }
-        public string AccFactoryDbUser { get; set; }
+        public string FactoryDbIp { get; set; }
+        public string FactoryDbSid { get; set; }
+        public string FactoryDbUser { get; set; }
     }
 }

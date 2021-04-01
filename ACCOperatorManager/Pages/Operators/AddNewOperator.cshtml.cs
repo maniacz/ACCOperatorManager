@@ -95,7 +95,7 @@ namespace AccOperatorManager.Pages.Operators
             }
             else
             {
-                accOperatorData.AddOperator(NewAccOperator);
+                accOperatorData.AddOperator(line, NewAccOperator);
                 accOperatorData.Commit();
                 return true;
             }

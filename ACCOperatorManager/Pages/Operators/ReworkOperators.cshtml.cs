@@ -23,10 +23,21 @@ namespace AccOperatorManager.Pages.Operators
 
         public void OnGet()
         {
-            //todo: przerobiæ tak by nie by³o na sztywno B404
-            Operators = accOperatorData.GetOperatorsByLine(LineEnum.EPS_Fiat_B404);
-            MaxOp = accOperatorData.GetAllLineOps();
-            OperatorGroups = accOperatorData.GetAllOperatroGroups();
+            Line b403 = new Line()
+            {
+                LineName = "TSSP_VW_EPS4",
+                DisplayName = "B403"
+            };
+            Line fiatEps = new Line()
+            {
+                LineName = "Gen3_EPS",
+                DisplayName = "6103"
+            };
+
+            Operators = accOperatorData.GetOperatorsByLine(b403);
+
+            MaxOp = accOperatorData.GetAllLineOps(fiatEps);
+            //OperatorGroups = accOperatorData.GetAllOperatroGroups();
         }
     }
 }

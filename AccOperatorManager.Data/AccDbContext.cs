@@ -9,9 +9,9 @@ namespace AccOperatorManager.Core
 {
     public partial class AccDbContext : DbContext
     {
-        public AccDbContext()
-        {
-        }
+        //public AccDbContext()
+        //{
+        //}
 
         public AccDbContext(DbContextOptions<AccDbContext> options)
             : base(options)
