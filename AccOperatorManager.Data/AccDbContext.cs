@@ -2,6 +2,8 @@
 using AccOperatorManager.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Console;
 
 #nullable disable
 
@@ -9,9 +11,15 @@ namespace AccOperatorManager.Core
 {
     public partial class AccDbContext : DbContext
     {
-        //public AccDbContext()
-        //{
-        //}
+        public static readonly ILoggerFactory loggerFactory
+            = LoggerFactory.Create(builder => { builder.AddConsole(); });
+
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+            => optionsBuilder
+                .UseLoggerFactory(loggerFactory)
+                .EnableSensitiveDataLogging();
+
 
         public AccDbContext(DbContextOptions<AccDbContext> options)
             : base(options)
