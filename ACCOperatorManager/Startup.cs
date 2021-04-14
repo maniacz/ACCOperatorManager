@@ -11,6 +11,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using FluentValidation.AspNetCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using AccOperatorManager.Data;
 
 namespace AccOperatorManager
 {
@@ -37,13 +39,15 @@ namespace AccOperatorManager
             //    options.UseOracle(connStrB404);
             //});
 
-            //services.AddDbContext<AccDbContext>(options => 
-            //    options.UseOracle(connStrB403, options => 
-            //        options.UseOracleSQLCompatibility("11")));
+            services.AddDbContext<AccDbContext>(options =>
+                options.UseOracle(connStrB403, options =>
+                    options.UseOracleSQLCompatibility("11"))
+                .ReplaceService<IModelCacheKeyFactory, DbSchemaAwareModelCacheFactory>())
+                .AddSingleton<IDbContextSchema>(new DbContextSchema("demo"));
 
-            services.AddDbContextFactory<AccDbContext>(options =>
-                options.UseOracle(connStrPattern, options =>
-                    options.UseOracleSQLCompatibility("11")));
+            //services.AddDbContextFactory<AccDbContext>(options =>
+            //    options.UseOracle(connStrPattern, options =>
+            //        options.UseOracleSQLCompatibility("11")));
 
             services.AddScoped<IAccOperatorData, OracleAccOperatorData>();
             services.AddRazorPages();

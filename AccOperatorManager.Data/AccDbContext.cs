@@ -1,5 +1,6 @@
 ﻿using System;
 using AccOperatorManager.Core;
+using AccOperatorManager.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Logging;
@@ -9,8 +10,14 @@ using Microsoft.Extensions.Logging.Console;
 
 namespace AccOperatorManager.Core
 {
-    public partial class AccDbContext : DbContext
+    public partial class AccDbContext : DbContext, IDbContextSchema
     {
+        public string Schema { get; }
+
+        public DbSet<AccOperator> AccOperators { get; set; }
+        public DbSet<AccOperatorGroup> AccOperatorGroups { get; set; }
+
+
         public static readonly ILoggerFactory loggerFactory
             = LoggerFactory.Create(builder => { builder.AddConsole(); });
 
@@ -21,17 +28,18 @@ namespace AccOperatorManager.Core
                 .EnableSensitiveDataLogging();
 
 
-        public AccDbContext(DbContextOptions<AccDbContext> options)
+        public AccDbContext(DbContextOptions<AccDbContext> options, IDbContextSchema schema = null)
             : base(options)
         {
+            Schema = schema?.Schema;
         }
-
-        public DbSet<AccOperator> AccOperators { get; set; }
-        public DbSet<AccOperatorGroup> AccOperatorGroups { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.HasDefaultSchema("ACC");
+            //tego niżej nie może być, bo jest problem przy zmianie schematu przy łączeniu do FactoryDB
+            //modelBuilder.HasDefaultSchema("ACC");
+
+            modelBuilder.ApplyConfiguration(new AccOperatorEntityConfiguration(Schema));
 
             modelBuilder.Entity<AccOperator>(entity =>
             {

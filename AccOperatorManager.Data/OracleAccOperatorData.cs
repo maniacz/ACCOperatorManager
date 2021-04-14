@@ -1,5 +1,7 @@
 ﻿using AccOperatorManager.Core;
+using AccOperatorManager.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -11,12 +13,13 @@ namespace AccOperatorManager.Core
     public class OracleAccOperatorData : IAccOperatorData
     {
         private AccDbContext db;
-        private readonly IDbContextFactory<AccDbContext> dbContextFactory;
+        //private readonly IDbContextFactory<AccDbContext> dbContextFactory;
         private readonly IConfiguration config;
 
-        public OracleAccOperatorData(IDbContextFactory<AccDbContext> dbContextFactory, IConfiguration config)
+        //public OracleAccOperatorData(IDbContextFactory<AccDbContext> dbContextFactory, IConfiguration config)
+        public OracleAccOperatorData(IConfiguration config)
         {
-            this.dbContextFactory = dbContextFactory;
+            //this.dbContextFactory = dbContextFactory;
             this.config = config;
         }
 
@@ -31,30 +34,65 @@ namespace AccOperatorManager.Core
             return db.AccOperators;
         }
 
-        private AccDbContext SetDbContext(Line line)
+        private AccDbContext SetDbContext(Line line, bool isForFactoryDb = false)
         {
             string connStr = @"Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=server_ip)(PORT=1521)))(CONNECT_DATA=(SID = server_sid)));User Id=server_user ;Password=acc";
 
             List<Line> lines = config.GetSection("AccLines").Get<List<Line>>();
-            string accServerIp = lines.Where(l => l.LineName == line.LineName).Select(l => l.AccServerIp).FirstOrDefault();
-            string accLocalDbSid = "xe";
-            string accLocalDBUser = "acc";
+            string accServerIp;
+            string dbSid;
+            string dBUser;
+            string schema;
+
+            if (isForFactoryDb)
+            {
+                accServerIp = lines.Where(l => l.LineName == line.LineName).Select(l => l.FactoryDbIp).FirstOrDefault();
+                dbSid = lines.Where(l => l.LineName == line.LineName).Select(l => l.FactoryDbSid).FirstOrDefault();
+                dBUser = lines.Where(l => l.LineName == line.LineName).Select(l => l.FactoryDbUser).FirstOrDefault();
+                schema = lines.Where(l => l.LineName == line.LineName).Select(l => l.FactoryDbUser).FirstOrDefault();
+            }
+            else 
+            {
+                accServerIp = lines.Where(l => l.LineName == line.LineName).Select(l => l.AccServerIp).FirstOrDefault();
+                dbSid = "xe";
+                dBUser = "acc";
+                schema = "acc";
+            }
 
             connStr = connStr.Replace("server_ip", accServerIp);
-            connStr = connStr.Replace("server_sid", accLocalDbSid);
-            connStr = connStr.Replace("server_user", accLocalDBUser);
+            connStr = connStr.Replace("server_sid", dbSid);
+            connStr = connStr.Replace("server_user", dBUser);
 
-            var dbContext = dbContextFactory.CreateDbContext();
+            //var dbContext = dbContextFactory.CreateDbContext();
             //string b415ConnStr = @"Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=10.213.28.1)(PORT=1521)))(CONNECT_DATA=(SID = xe)));User Id=acc ;Password=acc";
+
+            var dbContext = SchemaChangeDbContext(schema, connStr);
             dbContext.Database.CloseConnection();
             dbContext.Database.SetConnectionString(connStr);
             return dbContext;
         }
 
+        private AccDbContext SchemaChangeDbContext(string schemaFactoryDb, string connStr)
+        {
+            var optionsBuilder = new DbContextOptionsBuilder<AccDbContext>()
+                                    .UseOracle(connStr, options =>
+                    options.UseOracleSQLCompatibility("11"))
+                .ReplaceService<IModelCacheKeyFactory, DbSchemaAwareModelCacheFactory>();
+
+            //todo: Może to dziadostfo jest potrzebne
+            //.AddSingleton<IDbContextSchema>(new DbContextSchema("schemaFactoryDb"));
+
+            return new AccDbContext(optionsBuilder.Options, schemaFactoryDb == null ? null : new DbContextSchema(schemaFactoryDb));
+        }
+
         public string GetAllLineOps(Line line)
         {
             //db = SetDbContext(line);
-            return db.AccOperators.OrderByDescending(o => o.Op.Length).Where(o => o.Op != null).Select(o => o.Op).FirstOrDefault();
+            using (var ctx = SetDbContext(line))
+            {
+                //ctx.Database.
+                return db.AccOperators.OrderByDescending(o => o.Op.Length).Where(o => o.Op != null).Select(o => o.Op).FirstOrDefault();
+            }
         }
 
         public AccOperator GetOperatorByOperatorId(string operatorId)
