@@ -31,7 +31,8 @@ namespace AccOperatorManager.Core
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.HasDefaultSchema("ACC");
+            //tego niżej nie może być, bo jest problem przy zmianie schematu przy łączeniu do FactoryDB
+            //modelBuilder.HasDefaultSchema("ACC");
 
             modelBuilder.Entity<AccOperator>(entity =>
             {
