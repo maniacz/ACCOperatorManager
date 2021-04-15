@@ -1,0 +1,18 @@
+﻿@page
+@model AccOperatorManager.Pages.Operators.AddingResultModel
+@{
+}
+
+@foreach (var result in Model.ResultsOfAddingOperator)
+{
+    if (result.StartsWith("Operator added"))
+    {
+        <hr />
+        <label class="alert-info">@result</label>
+    }
+    else
+    {
+        <br />
+        <label class="alert-danger">@result</label>
+    }
+}

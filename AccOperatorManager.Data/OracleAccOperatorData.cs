@@ -1,5 +1,4 @@
 ﻿using AccOperatorManager.Core;
-//using AccOperatorManager.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Configuration;
@@ -16,17 +15,11 @@ namespace AccOperatorManager.Core
         private readonly IDbContextFactory<AccDbContext> dbContextFactory;
         private readonly IConfiguration config;
 
-        //public OracleAccOperatorData(IDbContextFactory<AccDbContext> dbContextFactory, IConfiguration config)
         public OracleAccOperatorData(IConfiguration config, IDbContextFactory<AccDbContext> dbContextFactory)
         {
             this.dbContextFactory = dbContextFactory;
             this.config = config;
         }
-
-        //public OracleAccOperatorData(AccDbContext db)
-        //{
-        //    this.db = db;
-        //}
 
         public IEnumerable<AccOperator> GetOperatorsByLine(Line line)
         {
@@ -64,9 +57,7 @@ namespace AccOperatorManager.Core
             connStr = connStr.Replace("server_user", dBUser);
 
             var dbContext = dbContextFactory.CreateDbContext();
-            //string b415ConnStr = @"Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=10.213.28.1)(PORT=1521)))(CONNECT_DATA=(SID = xe)));User Id=acc ;Password=acc";
 
-            //var dbContext = new AccDbContext();
             dbContext.Database.CloseConnection();
             dbContext.Database.SetConnectionString(connStr);
             return dbContext;
@@ -99,7 +90,7 @@ namespace AccOperatorManager.Core
 
         public IEnumerable<string> GetAllOperatroGroups(Line line)
         {
-            //db = SetDbContext(line);
+            db = SetDbContext(line);
             return db.AccOperatorGroups.Select(g => g.GroupName);
         }
 
@@ -110,8 +101,6 @@ namespace AccOperatorManager.Core
 
         public AccOperator AddOperator(Line line, AccOperator newOperator)
         {
-            db = SetDbContext(line);
-
             List<string> allowedSysGroupsForNormalOperator = new List<string>
             {
                 "SYS-ChangeStatus",
@@ -135,7 +124,15 @@ namespace AccOperatorManager.Core
             newOperator.GroupList = string.Join(';', normalOperatorGroupList);
             newOperator.Op = GetAllLineOps(line);
 
-            db.AccOperators.Add(newOperator);
+            //todo: może trzeba wrzucić tworzenie ctx'ów w using?
+            var ctxLocalDb = SetDbContext(line);
+            ctxLocalDb.AccOperators.Add(newOperator);
+            ctxLocalDb.SaveChanges();
+
+            //var ctxFactoryDb = SetDbContext(line, true);
+            //ctxFactoryDb.AccOperators.Add(newOperator);
+            //ctxFactoryDb.SaveChanges();
+
             return newOperator;
         }
 

@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
+using System.Text.Json;
 
 namespace AccOperatorManager.Pages.Operators
 {
@@ -18,6 +19,7 @@ namespace AccOperatorManager.Pages.Operators
         private readonly IOptions<List<Line>> lines;
         private readonly IAccOperatorData accOperatorData;
         private readonly IHtmlHelper htmlHelper;
+        private List<string> addingResult = new List<string>();
 
         [BindProperty]
         public AccOperator NewAccOperator { get; set; }
@@ -57,20 +59,25 @@ namespace AccOperatorManager.Pages.Operators
 
         public IActionResult OnPost()
         {
+            
+
             foreach (var checkedLine in LinesChecked)
             {
                 Console.WriteLine(checkedLine + " checked");
                 Line line = lines.Value.FirstOrDefault(l => l.DisplayName == checkedLine);
+
+                string info;
                 if (AddOperatorForLine(line))
-                {
-                    Console.WriteLine($"Operator added for line: {checkedLine}");
-                }
+                    info = $"Operator added for line: {checkedLine}";
                 else
-                {
-                    Console.WriteLine($"Failed to add operator for line: {checkedLine}");
-                }
+                    info = $"Failed to add operator for line: {checkedLine}";
+
+                Console.WriteLine(info);
+                addingResult.Add(info);
             }
-            return Page();
+
+            TempData["addingResult"] = JsonSerializer.Serialize(addingResult);
+            return RedirectToPage("./AddingResult");
         }
 
         private bool AddOperatorForLine(Line line)
@@ -95,9 +102,24 @@ namespace AccOperatorManager.Pages.Operators
             }
             else
             {
-                accOperatorData.AddOperator(line, NewAccOperator);
-                accOperatorData.Commit();
-                return true;
+                try
+                {
+                    accOperatorData.AddOperator(line, NewAccOperator);
+                    //accOperatorData.Commit(); - Commit przeniesiony na AccOperatorManager.Core: OracleAccOperatorData()
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    string errorCause;
+                    if (ex.InnerException.Message.Contains("ORA-00001"))
+                        errorCause = $"Operator o takim OperatorID ju¿ istnieje na linii {line.LineName}";
+                    else
+                        errorCause = ex.InnerException.Message ?? ex.Message;
+
+                    Console.WriteLine(errorCause);
+                    addingResult.Add(errorCause);
+                    return false;
+                }
             }
         }
     }
