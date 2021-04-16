@@ -8,11 +8,12 @@ namespace AccOperatorManager.Core
     public interface IAccOperatorData
     {
         IEnumerable<AccOperator> GetOperatorsByLine(Line line);
-        AccOperator GetOperatorByOperatorId(string operatorId);
+        AccOperator GetOperatorByOperatorId(Line line, string operatorId);
         AccOperator GetOperatorByOperatorName(string password);
         string GetAllLineOps(Line line);
         IEnumerable<string> GetAllOperatroGroups(Line line);
         AccOperator AddOperator(Line line, AccOperator newOperator);
+        AccOperator RemoveOperator(Line line, AccOperator operatorToRemove);
         int Commit();
     }
 }

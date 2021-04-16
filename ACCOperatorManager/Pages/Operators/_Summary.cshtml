@@ -4,9 +4,10 @@
 <div class="tab-pane">
     <div class="modal-header">
         <h3>@Model.Operatorid</h3>
+        <a class="btn btn-danger" asp-page=".\RemoveOperator" asp-route-operatorId="@Model.Operatorid" asp-route-lineName="@Model.Line">Usuń operatora</a>
     </div>
-    <div class="card-body">
+    @*<div class="card-body">
         <span> OP: @Model.Op</span>
         <span> Name: @Model.Name</span>
-    </div>
+    </div>*@
 </div>

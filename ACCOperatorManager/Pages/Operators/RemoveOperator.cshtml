@@ -1,0 +1,16 @@
+﻿@page
+@model AccOperatorManager.Pages.Operators.RemoveOperatorModel
+@{
+}
+
+<h2>Usuwanie operatora!</h2>
+<br />
+<div class="alert-danger">
+    Czy na pewno chcesz usunąć operatora @Model.accOperator.Operatorid?
+</div>
+<br />
+<br />
+<form method="post">
+    <button type="submit" class="btn btn-danger">Tak</button>
+    <a class="btn btn-info" asp-page="ReworkOperators">Nie</a>
+</form>

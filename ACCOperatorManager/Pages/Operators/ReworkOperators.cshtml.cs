@@ -34,7 +34,7 @@ namespace AccOperatorManager.Pages.Operators
                 DisplayName = "6103"
             };
 
-            Operators = accOperatorData.GetOperatorsByLine(b403);
+            Operators = accOperatorData.GetOperatorsByLine(fiatEps);
 
             MaxOp = accOperatorData.GetAllLineOps(fiatEps);
             //OperatorGroups = accOperatorData.GetAllOperatroGroups();
