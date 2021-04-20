@@ -24,7 +24,11 @@ namespace AccOperatorManager.Core
         public IEnumerable<AccOperator> GetOperatorsByLine(Line line)
         {
             db = SetDbContext(line);
-            return db.AccOperators;
+
+            //todo: przywrócić na prodzie
+            //return db.AccOperators.OrderBy(o => o.Operatorid);
+
+            return db.AccOperators.Where(o => o.Operatorid.StartsWith("test"));
         }
 
         private AccDbContext SetDbContext(Line line, bool isForFactoryDb = false)
@@ -73,9 +77,10 @@ namespace AccOperatorManager.Core
             }
         }
 
-        public AccOperator GetOperatorByOperatorId(string operatorId)
+        public AccOperator GetOperatorByOperatorId(Line line, string operatorId)
         {
-            return db.AccOperators.Where(o => o.Operatorid == operatorId).FirstOrDefault();
+            var ctx = SetDbContext(line);
+            return ctx.AccOperators.Where(o => o.Operatorid == operatorId).FirstOrDefault();
         }
 
         public AccOperator GetOperatorByOperatorName(string password)
@@ -134,6 +139,14 @@ namespace AccOperatorManager.Core
             //ctxFactoryDb.SaveChanges();
 
             return newOperator;
+        }
+        public AccOperator RemoveOperator(Line line, AccOperator operatorToRemove)
+        {
+            var ctxLocalDb = SetDbContext(line);
+            ctxLocalDb.AccOperators.Remove(operatorToRemove);
+            ctxLocalDb.SaveChanges();
+
+            return operatorToRemove;
         }
 
         public int Commit()
