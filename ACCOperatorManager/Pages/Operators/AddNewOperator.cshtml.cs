@@ -68,9 +68,9 @@ namespace AccOperatorManager.Pages.Operators
 
                 string info;
                 if (AddOperatorForLine(line))
-                    info = $"Operator added for line: {checkedLine}";
+                    info = $"Operator dodany na liniê {checkedLine}";
                 else
-                    info = $"Failed to add operator for line: {checkedLine}";
+                    info = $"B³¹d przy dodawaniu operatora na liniê {checkedLine}";
 
                 Console.WriteLine(info);
                 addingResult.Add(info);
@@ -96,7 +96,9 @@ namespace AccOperatorManager.Pages.Operators
             {
                 foreach (var failure in validationResult.Errors)
                 {
-                    Console.WriteLine("Property " + failure.PropertyName + " failed validation. Error was: " + failure.ErrorMessage);
+                    string error = $"Niew³aœciwie wype³nione pole: {failure.PropertyName}. {failure.ErrorMessage}";
+                    addingResult.Add(error);
+                    Console.WriteLine(error);
                 }
                 return false;
             }
