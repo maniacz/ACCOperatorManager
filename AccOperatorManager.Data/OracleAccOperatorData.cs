@@ -21,12 +21,12 @@ namespace AccOperatorManager.Core
             this.config = config;
         }
 
-        public IEnumerable<AccOperator> GetOperatorsByLine(Line line)
+        public IList<AccOperator> GetOperatorsByLine(Line line)
         {
             db = SetDbContext(line);
 
             //todo: przywrócić na prodzie
-            return db.AccOperators.OrderBy(o => o.Operatorid);
+            return db.AccOperators.OrderBy(o => o.Operatorid).ToList();
 
             //return db.AccOperators.Where(o => o.Operatorid.StartsWith("test"));
         }
@@ -84,14 +84,10 @@ namespace AccOperatorManager.Core
             return ctx.AccOperators.Where(o => o.Operatorid == operatorId).FirstOrDefault();
         }
 
-        public AccOperator GetOperatorByOperatorName(string password)
+        public AccOperator GetOperatorByOperatorPassword(Line line, string password)
         {
-            return db.AccOperators.FirstOrDefault(o => o.Name == password && o.Name != null);
-        }
-
-        public IEnumerable<AccOperator> GetOperatorsByLine(LineEnum line)
-        {
-            return db.AccOperators.Where(o => o.Line == "Gen3_EPS2" && o.GroupList != null);
+            var ctx = SetDbContext(line);
+            return ctx.AccOperators.FirstOrDefault(o => o.Name == password && o.Name != null);
         }
 
         public IEnumerable<string> GetAllOperatroGroups(Line line)
@@ -153,6 +149,12 @@ namespace AccOperatorManager.Core
         public int Commit()
         {
             return db.SaveChanges();
+        }
+
+        public IList<AccOperator> GetOperatorsWithIdStartingWith(Line line, string idStartingWith)
+        {
+            var ctx = SetDbContext(line);
+            return ctx.AccOperators.Where(o => o.Operatorid.StartsWith(idStartingWith)).ToList();
         }
     }
 }

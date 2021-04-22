@@ -12,7 +12,7 @@ namespace AccOperatorManager.Pages.Operators
 {
     public class ReworkOperatorsModel : PageModel
     {
-        public IEnumerable<AccOperator> Operators { get; set; }
+        public IList<AccOperator> Operators { get; set; }
         public string MaxOp { get; set; }
         public IEnumerable<string> OperatorGroups { get; set; }
         public IEnumerable<Line> Lines { get; set; }
@@ -22,6 +22,9 @@ namespace AccOperatorManager.Pages.Operators
 
         [BindProperty(SupportsGet = true)]
         public string SelectedLineName { get; set; }
+
+        [BindProperty]
+        public string SearchedOperator { get; set; }
 
         private readonly IAccOperatorData accOperatorData;
         private readonly IConfiguration config;
@@ -63,9 +66,16 @@ namespace AccOperatorManager.Pages.Operators
 
         public void OnPost()
         {
-            
+            //todo: dorobiæ jak¹œ fabrykê
             Line line = new Line();
             line.LineName = SelectedLineName;
+
+            if (!string.IsNullOrEmpty(SearchedOperator))
+            {
+                Operators = accOperatorData.GetOperatorsWithIdStartingWith(line, SearchedOperator);
+                return;
+            }
+
             Operators = accOperatorData.GetOperatorsByLine(line);
         }
     }

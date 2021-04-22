@@ -21,10 +21,10 @@ namespace AccOperatorManager.Core
             //RuleFor(opr => opr.Name).NotNull().MinimumLength(6).Must(BeUniqueName).WithMessage("Takie hasło jest już zajęte.");
         }
 
-        private bool BeUniqueName(string name)
-        {
-            return accOperatorData.GetOperatorByOperatorName(name) == null;
-            //return true;
-        }
+        //private bool BeUniqueName(string name)
+        //{
+        //    return accOperatorData.GetOperatorByOperatorName(name) == null;
+        //    //return true;
+        //}
     }
 }

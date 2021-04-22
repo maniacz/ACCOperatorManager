@@ -18,6 +18,7 @@
 
 <form method="post">
     <select asp-for="SelectedLineName" asp-items="@Model.LinesToSelect"></select>
+    <input type="text" asp-for="SearchedOperator" />
     <button class="btn btn-info" type="submit">Zmień linię</button>
 </form>
 

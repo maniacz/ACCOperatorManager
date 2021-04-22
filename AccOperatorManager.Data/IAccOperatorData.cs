@@ -7,9 +7,10 @@ namespace AccOperatorManager.Core
 {
     public interface IAccOperatorData
     {
-        IEnumerable<AccOperator> GetOperatorsByLine(Line line);
+        IList<AccOperator> GetOperatorsByLine(Line line);
         AccOperator GetOperatorByOperatorId(Line line, string operatorId);
-        AccOperator GetOperatorByOperatorName(string password);
+        AccOperator GetOperatorByOperatorPassword(Line line, string password);
+        IList<AccOperator> GetOperatorsWithIdStartingWith(Line line, string idStartingWith);
         string GetAllLineOps(Line line);
         IEnumerable<string> GetAllOperatroGroups(Line line);
         AccOperator AddOperator(Line line, AccOperator newOperator);
