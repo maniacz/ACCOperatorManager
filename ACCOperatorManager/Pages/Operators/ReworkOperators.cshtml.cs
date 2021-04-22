@@ -55,10 +55,8 @@ namespace AccOperatorManager.Pages.Operators
 
         public void OnGet()
         {
-            //todo: dorobiæ jak¹œ fabrykê
-            Line lineToShow = new Line();
-            lineToShow.LineName = SelectedLineName;
-            Operators = accOperatorData.GetOperatorsByLine(lineToShow);
+            Line line = GetSelectedLineFromConfig(SelectedLineName);
+            Operators = accOperatorData.GetOperatorsByLine(line);
 
             //MaxOp = accOperatorData.GetAllLineOps(fiatEps);
             //OperatorGroups = accOperatorData.GetAllOperatroGroups();
@@ -66,9 +64,7 @@ namespace AccOperatorManager.Pages.Operators
 
         public void OnPost()
         {
-            //todo: dorobiæ jak¹œ fabrykê
-            Line line = new Line();
-            line.LineName = SelectedLineName;
+            Line line = GetSelectedLineFromConfig(SelectedLineName);
 
             if (!string.IsNullOrEmpty(SearchedOperator))
             {
@@ -77,6 +73,11 @@ namespace AccOperatorManager.Pages.Operators
             }
 
             Operators = accOperatorData.GetOperatorsByLine(line);
+        }
+
+        private Line GetSelectedLineFromConfig(string selectedLineName)
+        {
+            return config.GetSection("AccLines").Get<List<Line>>().Where(l => l.LineName == selectedLineName).FirstOrDefault();
         }
     }
 }

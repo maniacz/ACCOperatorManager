@@ -24,11 +24,7 @@ namespace AccOperatorManager.Core
         public IList<AccOperator> GetOperatorsByLine(Line line)
         {
             db = SetDbContext(line);
-
-            //todo: przywrócić na prodzie
             return db.AccOperators.OrderBy(o => o.Operatorid).ToList();
-
-            //return db.AccOperators.Where(o => o.Operatorid.StartsWith("test"));
         }
 
         private AccDbContext SetDbContext(Line line, bool isForFactoryDb = false)
@@ -39,22 +35,18 @@ namespace AccOperatorManager.Core
             string accServerIp;
             string dbSid;
             string dBUser;
-            //todo: wywalić poniżsżą linijkę i spr czy działa
-            string schema;
 
             if (isForFactoryDb)
             {
                 accServerIp = lines.Where(l => l.LineName == line.LineName).Select(l => l.FactoryDbIp).FirstOrDefault();
                 dbSid = lines.Where(l => l.LineName == line.LineName).Select(l => l.FactoryDbSid).FirstOrDefault();
                 dBUser = lines.Where(l => l.LineName == line.LineName).Select(l => l.FactoryDbUser).FirstOrDefault();
-                schema = lines.Where(l => l.LineName == line.LineName).Select(l => l.FactoryDbUser).FirstOrDefault();
             }
             else
             {
                 accServerIp = lines.Where(l => l.LineName == line.LineName).Select(l => l.AccServerIp).FirstOrDefault();
                 dbSid = "xe";
                 dBUser = "acc";
-                schema = "acc";
             }
 
             connStr = connStr.Replace("server_ip", accServerIp);
