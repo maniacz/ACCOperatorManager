@@ -16,6 +16,10 @@
         <label>@group</label>
     }*@
 
+<form method="post">
+    <select asp-for="SelectedLineName" asp-items="@Model.LinesToSelect"></select>
+    <button class="btn btn-info" type="submit">Zmień linię</button>
+</form>
 
 @foreach (var accOperator in Model.Operators)
 {

@@ -26,9 +26,9 @@ namespace AccOperatorManager.Core
             db = SetDbContext(line);
 
             //todo: przywrócić na prodzie
-            //return db.AccOperators.OrderBy(o => o.Operatorid);
+            return db.AccOperators.OrderBy(o => o.Operatorid);
 
-            return db.AccOperators.Where(o => o.Operatorid.StartsWith("test"));
+            //return db.AccOperators.Where(o => o.Operatorid.StartsWith("test"));
         }
 
         private AccDbContext SetDbContext(Line line, bool isForFactoryDb = false)
@@ -39,6 +39,7 @@ namespace AccOperatorManager.Core
             string accServerIp;
             string dbSid;
             string dBUser;
+            //todo: wywalić poniżsżą linijkę i spr czy działa
             string schema;
 
             if (isForFactoryDb)
