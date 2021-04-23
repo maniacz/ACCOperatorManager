@@ -53,13 +53,18 @@ namespace AccOperatorManager.Pages.Operators
         {
             //Lines = htmlHelper.GetEnumSelectList<LineEnum>();
             //LineNames = htmlHelper.GetEnumSelectList<LineEnum>().Select(e => e.Text);
-            
+
             return Page();
         }
 
         public IActionResult OnPost()
         {
-            
+            AccOperatorValidator validator = new AccOperatorValidator(accOperatorData);
+            ValidationResult validationResult = validator.Validate(NewAccOperator);
+            if (!validationResult.IsValid)
+            {
+                return Page();
+            }
 
             foreach (var checkedLine in LinesChecked)
             {
