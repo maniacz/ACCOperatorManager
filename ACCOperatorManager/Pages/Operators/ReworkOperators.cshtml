@@ -4,9 +4,7 @@
     ViewData["Title"] = "Rework Operators";
 }
 
-<h1>Rework Operators</h1>
 
-<a asp-page="./AddNewOperator" class="btn btn-primary">Add New Operator</a>
 
 @*<h2>@Model.MaxOp</h2>*@
 
@@ -16,11 +14,17 @@
         <label>@group</label>
     }*@
 
+<br />
+
 <form method="post">
     <select asp-for="SelectedLineName" asp-items="@Model.LinesToSelect"></select>
     <input type="text" asp-for="SearchedOperator" />
-    <button class="btn btn-info" type="submit">Zmień linię</button>
+    <button class="btn btn-info" type="submit">Wyszukaj</button>
+    <a asp-page="./AddNewOperator" class="btn btn-primary" style="float:right">Dodaj nowego operatora</a>
 </form>
+
+<br />
+<br />
 
 @foreach (var accOperator in Model.Operators)
 {
