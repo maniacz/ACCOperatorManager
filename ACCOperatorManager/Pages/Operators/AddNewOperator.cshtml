@@ -11,8 +11,15 @@
     {
         <input type="checkbox" name="LinesChecked" value="@line" /> @line
     }
+    @if (Model.NoLineSelected)
+    {
+        <br />
+        <label class="text-danger">Zaznacz linie</label>
+    }
+
     <br />
     <br />
+
     <div class="form-group">
         <label asp-for="NewAccOperator.Operatorid"></label>
         <input asp-for="NewAccOperator.Operatorid" class="form-control" />

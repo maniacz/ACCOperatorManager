@@ -25,8 +25,10 @@ namespace AccOperatorManager.Pages.Operators
         public AccOperator NewAccOperator { get; set; }
         [BindProperty]
         public List<string> LinesChecked { get; set; }
+        [BindProperty]
+        public bool NoLineSelected { get; set; }
 
-        //public IEnumerable<SelectListItem> Lines { get; set; }
+        public IEnumerable<SelectListItem> Lines { get; set; }
         public IEnumerable<string> LineNames { get; set; }
 
         public AddNewOperatorModel(IOptions<List<Line>> lines, IAccOperatorData accOperatorData, IHtmlHelper htmlHelper)
@@ -34,6 +36,8 @@ namespace AccOperatorManager.Pages.Operators
             this.lines = lines;
             this.accOperatorData = accOperatorData;
             this.htmlHelper = htmlHelper;
+
+            NoLineSelected = false;
 
             PopulateLineNamesForCheckboxes();
             CreateLines();
@@ -63,6 +67,12 @@ namespace AccOperatorManager.Pages.Operators
             ValidationResult validationResult = validator.Validate(NewAccOperator);
             if (!validationResult.IsValid)
             {
+                return Page();
+            }
+
+            if (LinesChecked.Count == 0)
+            {
+                NoLineSelected = true;
                 return Page();
             }
 
