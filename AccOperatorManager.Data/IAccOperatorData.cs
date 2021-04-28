@@ -15,6 +15,7 @@ namespace AccOperatorManager.Core
         IEnumerable<string> GetAllOperatroGroups(Line line);
         AccOperator AddOperator(Line line, AccOperator newOperator);
         AccOperator RemoveOperator(Line line, AccOperator operatorToRemove);
+        AccOperator ChangeOperatorPassword(Line line, AccOperator accOperator);
         int Commit();
     }
 }

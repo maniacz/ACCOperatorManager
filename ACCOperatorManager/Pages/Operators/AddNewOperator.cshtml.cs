@@ -70,27 +70,19 @@ namespace AccOperatorManager.Pages.Operators
             {
                 Console.WriteLine(checkedLine + " checked");
                 Line line = lines.Value.FirstOrDefault(l => l.DisplayName == checkedLine);
-
-                string info;
-                if (AddOperatorForLine(line))
-                    info = $"Operator dodany na liniê {checkedLine}";
-                else
-                    info = $"B³¹d przy dodawaniu operatora na liniê {checkedLine}";
-
-                Console.WriteLine(info);
-                addingResult.Add(info);
+                AddOperatorForLine(line);
             }
 
             TempData["addingResult"] = JsonSerializer.Serialize(addingResult);
             return RedirectToPage("./AddingResult");
         }
 
-        private bool AddOperatorForLine(Line line)
+        private void AddOperatorForLine(Line line)
         {
             if (line == null)
             {
-                Console.WriteLine("Line was null.");
-                return false;
+                LogAndShowMessage("Line was null.");
+                return;
             }
 
             NewAccOperator.Line = line.LineName;
@@ -99,13 +91,11 @@ namespace AccOperatorManager.Pages.Operators
             ValidationResult validationResult = validator.Validate(NewAccOperator);
             if (!validationResult.IsValid)
             {
+                LogAndShowMessage("B³¹d przy dodawaniu operatora");
                 foreach (var failure in validationResult.Errors)
                 {
-                    string error = $"Niew³aœciwie wype³nione pole: {failure.PropertyName}. {failure.ErrorMessage}";
-                    addingResult.Add(error);
-                    Console.WriteLine(error);
+                    LogAndShowMessage($"Niew³aœciwie wype³nione pole: {failure.PropertyName}. {failure.ErrorMessage}");
                 }
-                return false;
             }
             else
             {
@@ -113,21 +103,27 @@ namespace AccOperatorManager.Pages.Operators
                 {
                     accOperatorData.AddOperator(line, NewAccOperator);
                     //accOperatorData.Commit(); - Commit przeniesiony na AccOperatorManager.Core: OracleAccOperatorData()
-                    return true;
+                    LogAndShowMessage($"Operator {NewAccOperator.Operatorid} dodany na liniê {line.DisplayName}");
                 }
                 catch (Exception ex)
                 {
-                    string errorCause;
                     if (ex.InnerException.Message.Contains("ORA-00001"))
-                        errorCause = $"Operator o takim OperatorID ju¿ istnieje na linii {line.LineName}";
+                    {
+                        accOperatorData.ChangeOperatorPassword(line, NewAccOperator);
+                        LogAndShowMessage($"Ju¿ istnieje operator o takim OperatorID na linii {line.LineName}, zmienono has³o operatorowi na: {NewAccOperator.Name}");
+                    }
                     else
-                        errorCause = ex.InnerException.Message ?? ex.Message;
-
-                    Console.WriteLine(errorCause);
-                    addingResult.Add(errorCause);
-                    return false;
+                    {
+                        LogAndShowMessage(ex.InnerException.Message ?? ex.Message);
+                    }
                 }
             }
+        }
+
+        private void LogAndShowMessage(string message)
+        {
+            Console.WriteLine(message);
+            addingResult.Add(message);
         }
     }
 }

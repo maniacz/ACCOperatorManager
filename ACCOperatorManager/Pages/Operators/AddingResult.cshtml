@@ -5,14 +5,24 @@
 
 @foreach (var result in Model.ResultsOfAddingOperator)
 {
-    if (result.StartsWith("Operator added"))
+    if (result.StartsWith("Operator"))
     {
         <hr />
-        <label class="alert-info">@result</label>
+        <label class="alert-success">@result</label>
+    }
+    else if (result.Contains("zmienono hasło"))
+    {
+        <hr />
+        <label class="alert-warning">@result</label>
     }
     else
     {
-        <br />
+        <hr />
         <label class="alert-danger">@result</label>
     }
 }
+
+<hr />
+<form method="post">
+    <input type="submit" class="btn btn-primary" value="Wyszukiwanie operatorów" />
+</form>

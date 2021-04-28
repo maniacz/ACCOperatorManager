@@ -148,5 +148,18 @@ namespace AccOperatorManager.Core
             var ctx = SetDbContext(line);
             return ctx.AccOperators.Where(o => o.Operatorid.StartsWith(idStartingWith)).ToList();
         }
+
+        public AccOperator ChangeOperatorPassword(Line line, AccOperator accOperator)
+        {
+            //todo: Czy trzeba tu rozwarzyć disconnected scenario?
+            var ctx = SetDbContext(line);
+            var editedOperator = ctx.AccOperators.Where(o => o.Operatorid == accOperator.Operatorid).FirstOrDefault();
+            if (editedOperator != null)
+            {
+                editedOperator.Name = accOperator.Name;
+                ctx.SaveChanges();
+            }
+            return editedOperator;
+        }
     }
 }
