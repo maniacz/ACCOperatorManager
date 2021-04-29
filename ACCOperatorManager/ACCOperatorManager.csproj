@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Serilog.Extensions.Logging.File" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\AccOperatorManager.Core\AccOperatorManager.Core.csproj" />
     <ProjectReference Include="..\AccOperatorManager.Data\AccOperatorManager.Data.csproj" />
   </ItemGroup>
