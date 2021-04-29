@@ -53,10 +53,18 @@ namespace AccOperatorManager.Pages.Operators
             return config.GetSection("AccLines").Get<List<Line>>();
         }
 
-        public void OnGet()
+        public IActionResult OnGet()
         {
+            UserValidator userValidator = new UserValidator(config);
+            if (!userValidator.IsUserAllowedToAccess())
+            {
+                return RedirectToPage("./NotAllowed");
+            }
+
             Line line = GetSelectedLineFromConfig(SelectedLineName);
             Operators = accOperatorData.GetOperatorsByLine(line);
+
+            return Page();
 
             //MaxOp = accOperatorData.GetAllLineOps(fiatEps);
             //OperatorGroups = accOperatorData.GetAllOperatroGroups();

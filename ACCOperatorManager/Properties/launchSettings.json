@@ -11,7 +11,7 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "https://localhost:44353/Operators/AddNewOperator",
+      "launchUrl": "https://localhost:44353/Operators/ReworkOperators",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
