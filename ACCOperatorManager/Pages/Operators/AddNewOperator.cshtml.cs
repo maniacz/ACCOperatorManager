@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using System.Text.Json;
+using Microsoft.Extensions.Logging;
 
 namespace AccOperatorManager.Pages.Operators
 {
@@ -19,6 +20,7 @@ namespace AccOperatorManager.Pages.Operators
         private readonly IOptions<List<Line>> lines;
         private readonly IAccOperatorData accOperatorData;
         private readonly IHtmlHelper htmlHelper;
+        private readonly ILogger logger;
         private List<string> addingResult = new List<string>();
 
         [BindProperty]
@@ -31,12 +33,12 @@ namespace AccOperatorManager.Pages.Operators
         public IEnumerable<SelectListItem> Lines { get; set; }
         public IEnumerable<string> LineNames { get; set; }
 
-        public AddNewOperatorModel(IOptions<List<Line>> lines, IAccOperatorData accOperatorData, IHtmlHelper htmlHelper)
+        public AddNewOperatorModel(IOptions<List<Line>> lines, IAccOperatorData accOperatorData, IHtmlHelper htmlHelper, ILogger<AddNewOperatorModel> logger)
         {
             this.lines = lines;
             this.accOperatorData = accOperatorData;
             this.htmlHelper = htmlHelper;
-
+            this.logger = logger;
             NoLineSelected = false;
 
             PopulateLineNamesForCheckboxes();
@@ -79,6 +81,8 @@ namespace AccOperatorManager.Pages.Operators
             foreach (var checkedLine in LinesChecked)
             {
                 Console.WriteLine(checkedLine + " checked");
+                logger.LogInformation(checkedLine + " checked");
+                
                 Line line = lines.Value.FirstOrDefault(l => l.DisplayName == checkedLine);
                 AddOperatorForLine(line);
             }
@@ -133,6 +137,7 @@ namespace AccOperatorManager.Pages.Operators
         private void LogAndShowMessage(string message)
         {
             Console.WriteLine(message);
+            logger.LogInformation(message);
             addingResult.Add(message);
         }
     }
