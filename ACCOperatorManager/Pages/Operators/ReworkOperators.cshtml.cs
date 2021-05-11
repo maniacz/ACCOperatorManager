@@ -60,12 +60,6 @@ namespace AccOperatorManager.Pages.Operators
         {
             logger.LogInformation($"{this.GetType().Name} started method {nameof(OnGet)}");
 
-            UserValidator userValidator = new UserValidator(config, logger);
-            if (!userValidator.IsUserAllowedToAccess())
-            {
-                return RedirectToPage("./NotAllowed");
-            }
-
             Line line = GetSelectedLineFromConfig(SelectedLineName);
             Operators = accOperatorData.GetOperatorsByLine(line);
 
