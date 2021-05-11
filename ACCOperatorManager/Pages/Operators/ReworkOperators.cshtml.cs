@@ -55,12 +55,6 @@ namespace AccOperatorManager.Pages.Operators
 
         public IActionResult OnGet()
         {
-            UserValidator userValidator = new UserValidator(config);
-            if (!userValidator.IsUserAllowedToAccess())
-            {
-                return RedirectToPage("./NotAllowed");
-            }
-
             Line line = GetSelectedLineFromConfig(SelectedLineName);
             Operators = accOperatorData.GetOperatorsByLine(line);
 
