@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace AccOperatorManager.Pages.Operators
 {
@@ -28,11 +29,13 @@ namespace AccOperatorManager.Pages.Operators
 
         private readonly IAccOperatorData accOperatorData;
         private readonly IConfiguration config;
+        private readonly ILogger logger;
 
-        public ReworkOperatorsModel(IAccOperatorData accOperatorData, IConfiguration config)
+        public ReworkOperatorsModel(IAccOperatorData accOperatorData, IConfiguration config, ILogger<ReworkOperatorsModel> logger)
         {
             this.accOperatorData = accOperatorData;
             this.config = config;
+            this.logger = logger;
             Lines = PopulateLinesFromAppSettings();
             LinesToSelect = PopulateLinesToSelect(Lines);
             SelectedLineName = Lines.Select(l => l.LineName).FirstOrDefault();
@@ -55,6 +58,14 @@ namespace AccOperatorManager.Pages.Operators
 
         public IActionResult OnGet()
         {
+            logger.LogInformation($"{this.GetType().Name} started method {nameof(OnGet)}");
+
+            UserValidator userValidator = new UserValidator(config, logger);
+            if (!userValidator.IsUserAllowedToAccess())
+            {
+                return RedirectToPage("./NotAllowed");
+            }
+
             Line line = GetSelectedLineFromConfig(SelectedLineName);
             Operators = accOperatorData.GetOperatorsByLine(line);
 
