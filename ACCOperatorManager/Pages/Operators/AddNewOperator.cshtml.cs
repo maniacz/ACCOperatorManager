@@ -121,14 +121,15 @@ namespace AccOperatorManager.Pages.Operators
                 }
                 catch (Exception ex)
                 {
-                    if (ex.InnerException.Message.Contains("ORA-00001"))
+                    //todo: Dorobiæ/przerobiæ metodê aby w bloku catch messages logowaæ nie jako info tylko jako b³êdy
+                    if (ex?.InnerException?.Message?.Contains("ORA-00001") ?? false)
                     {
                         accOperatorData.ChangeOperatorPassword(line, NewAccOperator);
                         LogAndShowMessage($"Ju¿ istnieje operator o takim OperatorID na linii {line.LineName}, zmienono has³o operatorowi na: {NewAccOperator.Name}");
                     }
                     else
                     {
-                        LogAndShowMessage(ex.InnerException.Message ?? ex.Message);
+                        LogAndShowMessage(ex?.InnerException?.Message ?? ex.Message);
                     }
                 }
             }
