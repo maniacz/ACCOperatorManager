@@ -48,7 +48,7 @@ namespace AccOperatorManager.Pages.Operators
             {
                 linesToSelect.Add(new SelectListItem { Value = line.LineName, Text = line.DisplayName });
             }
-            return linesToSelect;
+            return linesToSelect.OrderBy(sli => sli.Text).ToList();
         }
 
         private IEnumerable<Line> PopulateLinesFromAppSettings()

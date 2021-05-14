@@ -24,7 +24,7 @@ namespace AccOperatorManager.Core
         public IList<AccOperator> GetOperatorsByLine(Line line)
         {
             db = SetDbContext(line);
-            return db.AccOperators.OrderBy(o => o.Operatorid).ToList();
+            return db.AccOperators.Where(o => o.Line == line.LineName).OrderBy(o => o.Operatorid).ToList();
         }
 
         private AccDbContext SetDbContext(Line line, bool isForFactoryDb = false)
